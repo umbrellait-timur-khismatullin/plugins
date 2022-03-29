@@ -87,8 +87,6 @@ final class MethodCallHandlerImpl implements MethodCallHandler {
   }
 
   private void onLaunch(MethodCall call, Result result, String url) {
-    System.out.println("ururu");
-    Log.d("123", "23232");
     final boolean useWebView = call.argument("useWebView");
     final boolean enableJavaScript = call.argument("enableJavaScript");
     final boolean enableDomStorage = call.argument("enableDomStorage");

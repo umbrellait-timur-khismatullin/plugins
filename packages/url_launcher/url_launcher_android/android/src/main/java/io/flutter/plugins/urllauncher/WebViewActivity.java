@@ -153,14 +153,13 @@ public class WebViewActivity extends Activity {
                 return false;
             }
         });
-        System.out.println("hello");
 
         WebSettings webSettings = webview.getSettings();
         // Set User Agent
         //userAgent = System.getProperty("http.agent");
         // the upper line sometimes causes "403: disallowed user agent error"
-        userAgent = "random";
-        webSettings.setUserAgentString(userAgent + "Your App Info/Version");
+        userAgent = "Tomahawk 0.0.1";
+        webSettings.setUserAgentString(userAgent);
 
         // Enable Cookies
         CookieManager.getInstance().setAcceptCookie(true);
