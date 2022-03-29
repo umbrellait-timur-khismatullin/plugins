@@ -5,8 +5,10 @@
 package io.flutter.plugins.urllauncher;
 
 import android.os.Bundle;
-import android.util.Log;
+
 import androidx.annotation.Nullable;
+
+import io.flutter.Log;
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
@@ -85,6 +87,8 @@ final class MethodCallHandlerImpl implements MethodCallHandler {
   }
 
   private void onLaunch(MethodCall call, Result result, String url) {
+    System.out.println("ururu");
+    Log.d("123", "23232");
     final boolean useWebView = call.argument("useWebView");
     final boolean enableJavaScript = call.argument("enableJavaScript");
     final boolean enableDomStorage = call.argument("enableDomStorage");
