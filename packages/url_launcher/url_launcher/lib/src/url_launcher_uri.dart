@@ -4,6 +4,9 @@
 
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:url_launcher_platform_interface/url_launcher_platform_interface.dart';
 
@@ -42,22 +45,43 @@ Future<bool> launchUrl(
   LaunchMode mode = LaunchMode.platformDefault,
   WebViewConfiguration webViewConfiguration = const WebViewConfiguration(),
   String? webOnlyWindowName,
+  Brightness? statusBarBrightness,
 }) async {
   final bool isWebURL = url.scheme == 'http' || url.scheme == 'https';
   if (mode == LaunchMode.inAppWebView && !isWebURL) {
     throw ArgumentError.value(url, 'url',
         'To use an in-app web view, you must provide an http(s) URL.');
   }
+
+  /// [true] so that ui is automatically computed if [statusBarBrightness] is set.
+  bool previousAutomaticSystemUiAdjustment = true;
+  if (statusBarBrightness != null &&
+      defaultTargetPlatform == TargetPlatform.iOS) {
+    previousAutomaticSystemUiAdjustment =
+        WidgetsBinding.instance.renderView.automaticSystemUiAdjustment;
+    WidgetsBinding.instance.renderView.automaticSystemUiAdjustment = false;
+    SystemChrome.setSystemUIOverlayStyle(statusBarBrightness == Brightness.light
+        ? SystemUiOverlayStyle.dark
+        : SystemUiOverlayStyle.light);
+  }
+
   // TODO(stuartmorgan): Use UrlLauncherPlatform directly once a new API
   // that better matches these parameters has been added. For now, delegate to
   // launchUrlString so that there's only one copy of the parameter translation
   // logic.
-  return await launchUrlString(
+  final bool result = await launchUrlString(
     url.toString(),
     mode: mode,
     webViewConfiguration: webViewConfiguration,
     webOnlyWindowName: webOnlyWindowName,
   );
+
+  if (statusBarBrightness != null) {
+    WidgetsBinding.instance.renderView.automaticSystemUiAdjustment =
+        previousAutomaticSystemUiAdjustment;
+  }
+
+  return result;
 }
 
 /// Checks whether the specified URL can be handled by some app installed on the
