@@ -33,7 +33,7 @@ dependencies:
     git:
       url: https://github.com/umbrellait-timur-khismatullin/plugins.git
       path: packages/url_launcher/url_launcher_android
-      ref: 1ef00cc5e45226fc5008c55fbc4d4caa04e1d6af
+      ref: f12c4b808e9323cc5e2c5fcb3bda46297aaa354e
   url_launcher_ios: ^6.0.13
   # Allow either the pure-native or Dart/native hybrid versions of the desktop
   # implementations, as both are compatible.
