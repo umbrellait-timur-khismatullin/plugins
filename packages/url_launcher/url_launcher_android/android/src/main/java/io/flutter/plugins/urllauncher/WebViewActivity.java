@@ -170,7 +170,6 @@ public class WebViewActivity extends Activity {
         webSettings.setJavaScriptEnabled(true);
         webSettings.setRenderPriority(WebSettings.RenderPriority.HIGH);
         webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
-        webSettings.setAppCacheEnabled(true);
         webSettings.setDomStorageEnabled(true);
         webSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NARROW_COLUMNS);
         webSettings.setUseWideViewPort(true);
