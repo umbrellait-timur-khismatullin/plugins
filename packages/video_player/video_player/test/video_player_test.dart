@@ -5,6 +5,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:math' as math;
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -160,14 +161,22 @@ void main() {
     await tester.pumpWidget(VideoPlayer(controller));
     final Transform actualRotationCorrection =
         find.byType(Transform).evaluate().single.widget as Transform;
-    expect(
-        actualRotationCorrection.transform, equals(Matrix4.rotationZ(math.pi)));
+    final Float64List actualRotationCorrectionStorage =
+        actualRotationCorrection.transform.storage;
+    final Float64List expectedMatrixStorage =
+        Matrix4.rotationZ(math.pi).storage;
+    expect(actualRotationCorrectionStorage.length,
+        equals(expectedMatrixStorage.length));
+    for (int i = 0; i < actualRotationCorrectionStorage.length; i++) {
+      expect(actualRotationCorrectionStorage[i],
+          moreOrLessEquals(expectedMatrixStorage[i]));
+    }
   });
 
   testWidgets('no transform when rotationCorrection is zero',
       (WidgetTester tester) async {
-    final FakeController controller = FakeController.value(
-        VideoPlayerValue(duration: Duration.zero, rotationCorrection: 0));
+    final FakeController controller =
+        FakeController.value(VideoPlayerValue(duration: Duration.zero));
     controller.textureId = 1;
     await tester.pumpWidget(VideoPlayer(controller));
     expect(find.byType(Transform), findsNothing);
@@ -200,8 +209,7 @@ void main() {
     });
 
     testWidgets('handles null text', (WidgetTester tester) async {
-      await tester
-          .pumpWidget(const MaterialApp(home: ClosedCaption(text: null)));
+      await tester.pumpWidget(const MaterialApp(home: ClosedCaption()));
       expect(find.byType(Text), findsNothing);
     });
 
@@ -364,7 +372,7 @@ void main() {
       );
       expect(
           controller.textureId, VideoPlayerController.kUninitializedTextureId);
-      expect(await controller.position, const Duration(seconds: 0));
+      expect(await controller.position, Duration.zero);
       await controller.initialize();
 
       await controller.dispose();
@@ -462,7 +470,7 @@ void main() {
           'https://127.0.0.1',
         );
         await controller.initialize();
-        expect(await controller.position, const Duration(seconds: 0));
+        expect(await controller.position, Duration.zero);
 
         await controller.seekTo(const Duration(milliseconds: 500));
 
@@ -485,13 +493,13 @@ void main() {
           'https://127.0.0.1',
         );
         await controller.initialize();
-        expect(await controller.position, const Duration(seconds: 0));
+        expect(await controller.position, Duration.zero);
 
         await controller.seekTo(const Duration(seconds: 100));
         expect(await controller.position, const Duration(seconds: 1));
 
         await controller.seekTo(const Duration(seconds: -100));
-        expect(await controller.position, const Duration(seconds: 0));
+        expect(await controller.position, Duration.zero);
       });
     });
 
@@ -611,7 +619,7 @@ void main() {
         );
 
         await controller.initialize();
-        expect(controller.value.position, const Duration());
+        expect(controller.value.position, Duration.zero);
         expect(controller.value.caption.text, '');
 
         await controller.seekTo(const Duration(milliseconds: 100));
@@ -644,7 +652,7 @@ void main() {
 
         await controller.initialize();
         controller.setCaptionOffset(const Duration(milliseconds: 100));
-        expect(controller.value.position, const Duration());
+        expect(controller.value.position, Duration.zero);
         expect(controller.value.caption.text, '');
 
         await controller.seekTo(const Duration(milliseconds: 100));
@@ -680,7 +688,7 @@ void main() {
 
         await controller.initialize();
         controller.setCaptionOffset(const Duration(milliseconds: -100));
-        expect(controller.value.position, const Duration());
+        expect(controller.value.position, Duration.zero);
         expect(controller.value.caption.text, '');
 
         await controller.seekTo(const Duration(milliseconds: 100));
@@ -711,7 +719,7 @@ void main() {
         expect(controller.value.caption.text, 'one');
       });
 
-      test('setClosedCapitonFile loads caption file', () async {
+      test('setClosedCaptionFile loads caption file', () async {
         final VideoPlayerController controller = VideoPlayerController.network(
           'https://127.0.0.1',
         );
@@ -726,7 +734,7 @@ void main() {
         );
       });
 
-      test('setClosedCapitonFile removes/changes caption file', () async {
+      test('setClosedCaptionFile removes/changes caption file', () async {
         final VideoPlayerController controller = VideoPlayerController.network(
           'https://127.0.0.1',
           closedCaptionFile: _loadClosedCaption(),
@@ -780,7 +788,7 @@ void main() {
         await tester.pumpAndSettle();
         expect(controller.value.isBuffering, isTrue);
 
-        const Duration bufferStart = Duration(seconds: 0);
+        const Duration bufferStart = Duration.zero;
         const Duration bufferEnd = Duration(milliseconds: 500);
         fakeVideoEventStream.add(VideoEvent(
             eventType: VideoEventType.bufferingUpdate,
@@ -875,7 +883,7 @@ void main() {
           text: 'foo', number: 0, start: Duration.zero, end: Duration.zero);
       const Duration captionOffset = Duration(milliseconds: 250);
       final List<DurationRange> buffered = <DurationRange>[
-        DurationRange(const Duration(seconds: 0), const Duration(seconds: 4))
+        DurationRange(Duration.zero, const Duration(seconds: 4))
       ];
       const bool isInitialized = true;
       const bool isPlaying = true;
@@ -1026,9 +1034,7 @@ void main() {
     test('false allowBackgroundPlayback pauses playback', () async {
       final VideoPlayerController controller = VideoPlayerController.file(
         File(''),
-        videoPlayerOptions: VideoPlayerOptions(
-          allowBackgroundPlayback: false,
-        ),
+        videoPlayerOptions: VideoPlayerOptions(),
       );
       await controller.initialize();
       await controller.play();
@@ -1112,7 +1118,7 @@ class FakeVideoPlayerPlatform extends VideoPlayerPlatform {
   @override
   Future<Duration> getPosition(int textureId) async {
     calls.add('position');
-    return _positions[textureId] ?? const Duration(seconds: 0);
+    return _positions[textureId] ?? Duration.zero;
   }
 
   @override

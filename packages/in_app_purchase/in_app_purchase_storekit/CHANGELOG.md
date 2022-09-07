@@ -1,3 +1,19 @@
+## NEXT
+
+* Updates minimum Flutter version to 2.10.
+
+## 0.3.2
+
+* Adds the `identifier` and `type` fields to the `SKProductDiscountWrapper` to reflect the changes in the [SKProductDiscount](https://developer.apple.com/documentation/storekit/skproductdiscount?language=objc) in iOS 12.2.
+
+## 0.3.1+1
+
+* Fixes avoid_redundant_argument_values lint warnings and minor typos.
+
+## 0.3.1
+
+* Adds ability to purchase more than one of a product.
+
 ## 0.3.0+10
 
 * Ignores deprecation warnings for upcoming styleFrom button API changes.
