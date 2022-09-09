@@ -158,7 +158,7 @@ public class WebViewActivity extends Activity {
         // Set User Agent
         //userAgent = System.getProperty("http.agent");
         // the upper line sometimes causes "403: disallowed user agent error"
-        userAgent = "Tomahawk 0.0.1";
+        userAgent = "Tomahawk 1.3.x";
         webSettings.setUserAgentString(userAgent);
 
         // Enable Cookies
@@ -182,6 +182,10 @@ public class WebViewActivity extends Activity {
         webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
         webSettings.setSupportMultipleWindows(true);
         contextPop = this.getApplicationContext();
+
+        webview.getSettings().setBuiltInZoomControls(true);
+        webview.getSettings().setDisplayZoomControls(false);
+//        webview.getSettings().setSupportZoom(true);
 
         webview.loadUrl(url, headersMap);
 
