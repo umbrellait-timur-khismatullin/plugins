@@ -185,7 +185,6 @@ public class WebViewActivity extends Activity {
 
         webview.getSettings().setBuiltInZoomControls(true);
         webview.getSettings().setDisplayZoomControls(false);
-//        webview.getSettings().setSupportZoom(true);
 
         webview.loadUrl(url, headersMap);
 
@@ -312,7 +311,6 @@ public class WebViewActivity extends Activity {
 
         @Override
         public void onCloseWindow(WebView window) {
-            //Toast.makeText(contextPop,"onCloseWindow called",Toast.LENGTH_SHORT).show();
             try {
                 webViewPop.destroy();
             } catch (Exception e) {
